@@ -4,10 +4,28 @@ Page({
     isLoading: true,
     errorMessage: '',
     selectedIds: [],
-    selectedCount: 0
+    selectedCount: 0,
+    isAdmin: false
   },
 
   onLoad: function () {
+    this.checkAdminPermission();
+  },
+
+  checkAdminPermission: function () {
+    const isAdmin = wx.getStorageSync('isAdmin') || false;
+    if (!isAdmin) {
+      wx.showModal({
+        title: '访问受限',
+        content: '您没有权限访问此页面，请先验证管理员身份',
+        showCancel: false,
+        success: () => {
+          wx.reLaunch({ url: '/pages/index/index' });
+        }
+      });
+      return;
+    }
+    this.setData({ isAdmin: true });
     this.loadFileList();
   },
 

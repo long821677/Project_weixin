@@ -8,15 +8,25 @@ Page({
     isLoading: false,
     errorMessage: '',
     downloadUrl: '',
-    showFileInfo: false
+    showFileInfo: false,
+    requestCount: 0,
+    maxRequests: 5
   },
 
   onLoad: function (options) {
     const token = options?.token || '';
-    if (token) {
+    if (token && this.validateTokenFormat(token)) {
       this.setData({ token });
       this.loadFileInfo(token);
     }
+  },
+
+  validateTokenFormat: function (token) {
+    if (!token || typeof token !== 'string') {
+      return false;
+    }
+    const tokenPattern = /^[a-zA-Z0-9_-]{10,50}$/;
+    return tokenPattern.test(token);
   },
 
   loadFileInfo: function (token) {
@@ -68,12 +78,32 @@ Page({
   },
 
   submitToken: function () {
-    const token = this.data.inputToken.trim();
+    const { inputToken, requestCount, maxRequests } = this.data;
+    const token = inputToken.trim();
+    
     if (!token) {
       wx.showToast({ title: '请输入分享码', icon: 'none' });
       return;
     }
-    this.setData({ token });
+    
+    if (!this.validateTokenFormat(token)) {
+      wx.showToast({ title: '无效的分享码格式', icon: 'none' });
+      return;
+    }
+    
+    if (requestCount >= maxRequests) {
+      wx.showModal({
+        title: '请求受限',
+        content: '您的请求次数已达上限，请稍后再试',
+        showCancel: false
+      });
+      return;
+    }
+    
+    this.setData({ 
+      token, 
+      requestCount: requestCount + 1 
+    });
     this.loadFileInfo(token);
   },
 

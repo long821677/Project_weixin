@@ -8,11 +8,28 @@ Page({
     shareUrl: '',
     remainingDownloads: 10,
     expireDays: 7,
-    uploadRetryCount: 0
+    uploadRetryCount: 0,
+    isAdmin: false
   },
 
   onLoad: function () {
-    // 检查是否支持 chooseFile API（基础库 2.14.0+）
+    this.checkAdminPermission();
+  },
+
+  checkAdminPermission: function () {
+    const isAdmin = wx.getStorageSync('isAdmin') || false;
+    if (!isAdmin) {
+      wx.showModal({
+        title: '访问受限',
+        content: '您没有权限访问此页面，请先验证管理员身份',
+        showCancel: false,
+        success: () => {
+          wx.reLaunch({ url: '/pages/index/index' });
+        }
+      });
+      return;
+    }
+    this.setData({ isAdmin: true });
     this.checkFileApiSupport();
   },
 
