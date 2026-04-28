@@ -108,33 +108,46 @@ Page({
   },
 
   previewFile: function () {
+    console.log('previewFile 被调用');
     const { downloadUrl, fileName, token } = this.data;
-    if (!downloadUrl || !fileName) return;
+    
+    console.log('downloadUrl:', downloadUrl);
+    console.log('fileName:', fileName);
+    
+    if (!downloadUrl || !fileName) {
+      console.log('缺少必要信息');
+      wx.showToast({ title: '请先获取文件信息', icon: 'none' });
+      return;
+    }
 
-    const that = this;
     const ext = fileName.split('.').pop().toLowerCase();
     const imageTypes = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
     const isImage = imageTypes.includes(ext);
     
-    console.log('===== 文件预览调试 =====');
-    console.log('文件名:', fileName);
     console.log('文件扩展名:', ext);
     console.log('是否为图片:', isImage);
-    console.log('downloadUrl:', downloadUrl);
+
+    const tip = isImage ? '• 点击右上角「···」菜单 → 保存图片到相册' : '• 点击右上角「···」菜单 → 选择「用其他应用打开」（如WPS）→ 选择「另存为」';
 
     wx.showModal({
       title: '📌 文件保存提示',
-      content: `预览后如需保存文件：\n\n${isImage ? '• 点击右上角「···」菜单 → 保存图片到相册' : '• 点击右上角「···」菜单 → 选择「用其他应用打开」（如WPS）→ 选择「另存为」'}`,
-      confirmText: '知道了，开始预览',
+      content: '预览后如需保存文件：\n\n' + tip,
+      confirmText: '知道了',
       showCancel: false,
-      success: () => {
-        that.doPreview(isImage, downloadUrl, fileName, token);
+      success: (res) => {
+        console.log('modal success, res.confirm:', res.confirm);
+        this.doPreview(isImage, downloadUrl, fileName, token);
+      },
+      fail: (err) => {
+        console.log('modal fail:', err);
       }
     });
   },
 
   doPreview: function(isImage, downloadUrl, fileName, token) {
-    const that = this;
+    console.log('doPreview 被调用');
+    console.log('isImage:', isImage);
+    console.log('downloadUrl:', downloadUrl);
 
     // 图片文件：使用 wx.previewImage 预览
     if (isImage) {

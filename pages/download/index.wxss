@@ -284,17 +284,17 @@
 }
 
 .tip-title {
-  font-size: 30rpx;
+  font-size: 34rpx;
   font-weight: 600;
   color: #e65100;
   display: block;
-  margin-bottom: 12rpx;
+  margin-bottom: 16rpx;
 }
 
 .tip-text {
-  font-size: 28rpx;
-  color: #666666;
-  line-height: 1.6;
+  font-size: 32rpx;
+  color: #444444;
+  line-height: 1.8;
 }
 
 .reset-btn {
