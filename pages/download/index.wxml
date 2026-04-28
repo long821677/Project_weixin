@@ -43,13 +43,10 @@
       <button class="preview-btn" bindtap="previewFile">
         👁️ 预览文件
       </button>
-      <button class="download-btn" bindtap="downloadFile">
-        📥 下载文件
-      </button>
     </view>
 
     <view class="preview-tip">
-      <text>💡 提示：预览图片后，点击右上角"···"菜单可保存图片；预览文档后可选择"用其他应用打开"在WPS等应用中查看</text>
+      <text>💡 提示：预览后如需保存文件，请点击右上角"···"菜单，选择"用其他应用打开"（如WPS），然后另存为即可下载</text>
     </view>
   </view>
 

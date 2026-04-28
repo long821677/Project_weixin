@@ -1,7 +1,7 @@
 <view class="container">
   <view class="header">
-    <view class="logo">📁</view>
-    <view class="title">文件分享系统</view>
+    <view class="logo" bindlongpress="onLogoLongPress" bindtap="onLogoTap">📁</view>
+    <view class="title">小仙草的学习工具</view>
     <view class="subtitle">安全、便捷的文件分享平台</view>
   </view>
 
@@ -25,24 +25,18 @@
     </view>
   </view>
 
-  <view class="admin-section">
-    <view wx:if="{{!isAdmin}}" class="admin-login">
-      <view class="admin-label">管理员入口</view>
-      <view wx:if="!showPasswordInput" class="admin-hint" bindtap="togglePasswordInput">
-        点击验证管理员身份
-      </view>
-      <view wx:if="showPasswordInput" class="password-input-wrap">
-        <input 
-          class="password-input" 
-          type="password" 
-          placeholder="请输入管理员密码" 
-          value="{{inputPassword}}"
-          bindinput="onPasswordInput"
-        />
-        <view class="password-actions">
-          <button class="btn-verify" bindtap="verifyAdmin">验证</button>
-          <button class="btn-cancel" bindtap="togglePasswordInput">取消</button>
-        </view>
+  <view class="admin-section" wx:if="{{isAdmin || showPasswordInput}}">
+    <view wx:if="{{showPasswordInput && !isAdmin}}" class="password-input-wrap">
+      <input 
+        class="password-input" 
+        type="password" 
+        placeholder="请输入管理员密码" 
+        value="{{inputPassword}}"
+        bindinput="onPasswordInput"
+      />
+      <view class="password-actions">
+        <button class="btn-verify" bindtap="verifyAdmin">验证</button>
+        <button class="btn-cancel" bindtap="togglePasswordInput">取消</button>
       </view>
     </view>
 

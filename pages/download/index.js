@@ -169,21 +169,29 @@ Page({
         }
 
         wx.openDocument({
-          filePath: res.tempFilePath,
-          showMenu: true,
-          success: () => {
-            console.log('文件预览成功');
-          },
-          fail: (error) => {
-            console.error('文件预览失败:', error);
-            wx.showModal({
-              title: '预览失败',
-              content: '无法在小程序中预览此文件，请尝试下载',
-              confirmText: '知道了',
-              showCancel: false
-            });
-          }
-        });
+            filePath: res.tempFilePath,
+            showMenu: true,
+            success: () => {
+              console.log('文件预览成功');
+              setTimeout(() => {
+                wx.showModal({
+                  title: '📌 文件保存方法',
+                  content: '如需保存文件，请点击右上角"···"菜单，选择"用其他应用打开"（如WPS），然后在WPS中选择"另存为"即可下载到本地。',
+                  confirmText: '知道了',
+                  showCancel: false
+                });
+              }, 800);
+            },
+            fail: (error) => {
+              console.error('文件预览失败:', error);
+              wx.showModal({
+                title: '预览失败',
+                content: '无法在小程序中预览此文件，请尝试用其他应用打开',
+                confirmText: '知道了',
+                showCancel: false
+              });
+            }
+          });
       },
       fail: (error) => {
         wx.hideLoading();

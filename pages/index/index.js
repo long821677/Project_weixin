@@ -3,7 +3,8 @@ Page({
     isAdmin: false,
     inputPassword: '',
     showPasswordInput: false,
-    adminPassword: 'admin123'
+    adminPassword: 'admin123',
+    longPressCount: 0
   },
 
   onLoad: function () {
@@ -59,5 +60,27 @@ Page({
 
   goDownload: function () {
     wx.navigateTo({ url: '/pages/download/index' });
+  },
+
+  onLogoLongPress: function () {
+    const { longPressCount, isAdmin } = this.data;
+    
+    if (isAdmin) {
+      return;
+    }
+    
+    const newCount = longPressCount + 1;
+    this.setData({ longPressCount: newCount });
+    
+    if (newCount >= 3) {
+      this.setData({ showPasswordInput: true, longPressCount: 0 });
+      wx.showToast({ title: '管理员入口已开启', icon: 'none' });
+    } else if (newCount === 1) {
+      wx.showToast({ title: '长按3次开启管理员入口', icon: 'none', duration: 1500 });
+    }
+  },
+
+  onLogoTap: function () {
+    this.setData({ longPressCount: 0 });
   }
 });
