@@ -102,12 +102,10 @@
           <view class="form-input-wrap">
             <input 
               class="form-input" 
-              type="number" 
+              type="digit" 
               value="{{editMaxDownloads}}" 
               bindinput="onMaxDownloadsChange"
               placeholder="请输入下载次数"
-              min="1"
-              max="1000"
             />
             <text class="form-unit">次</text>
           </view>
@@ -117,12 +115,10 @@
           <view class="form-input-wrap">
             <input 
               class="form-input" 
-              type="number" 
+              type="digit" 
               value="{{editExpireDays}}" 
               bindinput="onExpireDaysChange"
               placeholder="请输入有效天数"
-              min="1"
-              max="365"
             />
             <text class="form-unit">天</text>
           </view>
