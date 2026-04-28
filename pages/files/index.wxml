@@ -95,7 +95,7 @@
       <view class="modal-body">
         <view class="form-item">
           <text class="form-label">文件名称</text>
-          <text class="form-value">{{ editingFile?.fileName || '-' }}</text>
+          <text class="form-value">{{ editingFile && editingFile.fileName ? editingFile.fileName : '-' }}</text>
         </view>
         <view class="form-item">
           <text class="form-label">最大下载次数</text>
