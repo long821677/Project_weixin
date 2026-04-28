@@ -122,6 +122,20 @@ Page({
     console.log('是否为图片:', isImage);
     console.log('downloadUrl:', downloadUrl);
 
+    wx.showModal({
+      title: '📌 文件保存提示',
+      content: `预览后如需保存文件：\n\n${isImage ? '• 点击右上角「···」菜单 → 保存图片到相册' : '• 点击右上角「···」菜单 → 选择「用其他应用打开」（如WPS）→ 选择「另存为」'}`,
+      confirmText: '知道了，开始预览',
+      showCancel: false,
+      success: () => {
+        that.doPreview(isImage, downloadUrl, fileName, token);
+      }
+    });
+  },
+
+  doPreview: function(isImage, downloadUrl, fileName, token) {
+    const that = this;
+
     // 图片文件：使用 wx.previewImage 预览
     if (isImage) {
       wx.showLoading({ title: '加载中...' });
@@ -173,14 +187,6 @@ Page({
             showMenu: true,
             success: () => {
               console.log('文件预览成功');
-              setTimeout(() => {
-                wx.showModal({
-                  title: '📌 文件保存方法',
-                  content: '如需保存文件，请点击右上角"···"菜单，选择"用其他应用打开"（如WPS），然后在WPS中选择"另存为"即可下载到本地。',
-                  confirmText: '知道了',
-                  showCancel: false
-                });
-              }, 800);
             },
             fail: (error) => {
               console.error('文件预览失败:', error);

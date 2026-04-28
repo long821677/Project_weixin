@@ -265,12 +265,36 @@
 }
 
 .preview-tip {
-  text-align: center;
+  display: flex;
+  align-items: flex-start;
+  background: #fff8e1;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-top: 24rpx;
 }
 
-.preview-tip text {
-  font-size: 24rpx;
-  color: #999999;
+.tip-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.tip-content {
+  flex: 1;
+}
+
+.tip-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #e65100;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.tip-text {
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.6;
 }
 
 .reset-btn {

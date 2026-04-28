@@ -46,7 +46,11 @@
     </view>
 
     <view class="preview-tip">
-      <text>💡 提示：预览后如需保存文件，请点击右上角"···"菜单，选择"用其他应用打开"（如WPS），然后另存为即可下载</text>
+      <view class="tip-icon">💡</view>
+      <view class="tip-content">
+        <text class="tip-title">文件保存方法</text>
+        <text class="tip-text">预览后如需保存文件，请点击右上角「···」菜单，选择「用其他应用打开」（如WPS），然后选择「另存为」即可下载到本地</text>
+      </view>
     </view>
   </view>
 
