@@ -10,7 +10,9 @@ Page({
     expireDays: 7,
     uploadRetryCount: 0,
     isAdmin: false,
-    lastError: null
+    lastError: null,
+    fileExtension: '',
+    formattedFileSize: ''
   },
 
   onLoad: function () {
@@ -208,6 +210,8 @@ Page({
 
   setFileInfo: function(file) {
     const that = this;
+    const ext = this.getFileExtension(file.name);
+    const formattedSize = this.formatFileSize(file.size);
     
     if (file.path.startsWith('http')) {
       console.log('文件路径是HTTP URL');
@@ -217,7 +221,9 @@ Page({
         tempFilePath: file.path,
         showShareLink: false,
         shareUrl: '',
-        lastError: null
+        lastError: null,
+        fileExtension: ext,
+        formattedFileSize: formattedSize
       });
       wx.showToast({ title: '文件选择成功', icon: 'success' });
       return;
@@ -238,7 +244,9 @@ Page({
           tempFilePath: file.path,
           showShareLink: false,
           shareUrl: '',
-          lastError: null
+          lastError: null,
+          fileExtension: ext,
+          formattedFileSize: that.formatFileSize(statRes.size)
         });
         wx.showToast({ title: '文件选择成功', icon: 'success' });
       },
@@ -250,7 +258,9 @@ Page({
           tempFilePath: file.path,
           showShareLink: false,
           shareUrl: '',
-          lastError: null
+          lastError: null,
+          fileExtension: ext,
+          formattedFileSize: formattedSize
         });
         wx.showToast({ title: '文件选择成功', icon: 'success' });
       }
@@ -482,7 +492,9 @@ Page({
       showShareLink: false,
       shareUrl: '',
       lastError: null,
-      uploadRetryCount: 0
+      uploadRetryCount: 0,
+      fileExtension: '',
+      formattedFileSize: ''
     });
   },
 

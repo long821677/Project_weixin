@@ -21,11 +21,11 @@
 
     <view wx:if="fileName" class="file-info">
       <view class="file-icon">
-        <text class="file-icon-text">{{ getFileExtension(fileName) }}</text>
+        <text class="file-icon-text">{{ fileExtension }}</text>
       </view>
       <view class="file-detail">
         <view class="file-name">{{ fileName }}</view>
-        <view class="file-size">文件大小：{{ formatFileSize(fileSize) }}</view>
+        <view class="file-size">文件大小：{{ formattedFileSize }}</view>
       </view>
       <view class="file-actions">
         <view class="action-btn" bindtap="resetUpload">重新选择</view>
