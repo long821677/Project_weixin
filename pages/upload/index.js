@@ -67,39 +67,13 @@ Page({
   chooseFile: function() {
     this.setData({ lastError: null });
 
-    wx.showActionSheet({
-      itemList: ['从聊天记录选择', '从手机文件选择'],
-      itemColor: '#576B95',
-      success: (res) => {
-        if (res.tapIndex === 0) {
-          this.chooseFileFromMessage();
-        } else {
-          this.chooseFileFromSystem();
-        }
-      },
-      fail: () => {
+    wx.showModal({
+      title: '选择文件',
+      content: '由于微信小程序平台限制，需要先将文件发送到微信聊天中，然后从聊天记录中选择。\n\n建议：\n1. 将文件发送到「文件传输助手」或任意聊天\n2. 返回小程序后选择「从聊天记录选择」',
+      confirmText: '知道了',
+      showCancel: false,
+      success: () => {
         this.chooseFileFromMessage();
-      }
-    });
-  },
-
-  chooseFileFromSystem: function() {
-    wx.chooseMessageFile({
-      count: 1,
-      type: 'file',
-      extension: ['ppt', 'pptx', 'doc', 'docx', 'pdf', 'xls', 'xlsx', 'zip', 'rar', 'jpg', 'jpeg', 'png', 'gif', 'mp4', 'avi', 'mov'],
-      success: (res) => {
-        console.log('从聊天记录选择文件成功:', res);
-        if (res.tempFiles && res.tempFiles.length > 0) {
-          const file = res.tempFiles[0];
-          this.validateAndSetFile(file);
-        } else {
-          wx.showToast({ title: '未选择任何文件', icon: 'none' });
-        }
-      },
-      fail: (error) => {
-        console.error('从聊天记录选择文件失败:', error);
-        this.handleFileChooseError(error, 'message');
       }
     });
   },
@@ -120,13 +94,13 @@ Page({
       },
       fail: (error) => {
         console.error('从聊天记录选择文件失败:', error);
-        this.handleFileChooseError(error, 'message');
+        this.handleFileChooseError(error);
       }
     });
   },
 
-  handleFileChooseError: function(error, source) {
-    console.error('文件选择失败 [' + source + ']:', error);
+  handleFileChooseError: function(error) {
+    console.error('文件选择失败:', error);
 
     const errMsg = error.errMsg || '';
 
@@ -134,25 +108,11 @@ Page({
       return;
     }
 
-    if (source === 'fileSystem' && !errMsg.includes('cancel')) {
-      wx.showModal({
-        title: '选择失败',
-        content: '无法从文件系统选择文件，是否尝试从聊天记录选择？',
-        confirmText: '尝试聊天记录',
-        cancelText: '取消',
-        success: (res) => {
-          if (res.confirm) {
-            this.chooseFileFromMessage();
-          }
-        }
-      });
-    } else if (!errMsg.includes('cancel')) {
-      wx.showModal({
-        title: '选择文件失败',
-        content: '微信版本可能过低，建议更新微信后重试。错误信息：' + errMsg,
-        showCancel: false
-      });
-    }
+    wx.showModal({
+      title: '选择文件失败',
+      content: '无法从聊天记录中选择文件。\n\n常见原因：\n• 微信版本过低，请更新到最新版本\n• 未找到可选择的文件\n• 请先将文件发送到微信聊天中',
+      showCancel: false
+    });
   },
 
   validateAndSetFile: function(file) {

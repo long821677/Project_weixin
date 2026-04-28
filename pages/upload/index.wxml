@@ -15,7 +15,7 @@
         <text class="upload-icon-text">📁</text>
       </view>
       <view class="upload-text">点击选择文件</view>
-      <view class="upload-hint">支持从手机文件系统或聊天记录选择</view>
+      <view class="upload-hint">需先将文件发送到微信聊天中</view>
       <view class="upload-formats">支持格式：PPT、PPTX、PDF、Word、Excel、图片、压缩包等</view>
     </view>
 
