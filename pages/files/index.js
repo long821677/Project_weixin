@@ -170,7 +170,7 @@ Page({
     const token = e.currentTarget.dataset.token;
     const fileName = e.currentTarget.dataset.filename || '文件';
     
-    const shareText = `📁 ${fileName}\n🔑 分享码：${token}\n\n💡 使用方法：\n1. 微信搜索「文件分享系统」\n2. 点击「通过链接下载」\n3. 粘贴分享码即可下载`;
+    const shareText = `📁 ${fileName}\n🔑 分享码：${token}\n\n💡 使用方法：\n1. 微信搜索「小仙草的学习工具」\n2. 点击「通过链接下载」\n3. 粘贴分享码即可下载`;
     
     wx.setClipboardData({
       data: shareText,
