@@ -1,0 +1,59 @@
+<view class="container">
+  <view class="header">
+    <text class="title">文件预览</text>
+    <text class="subtitle">输入分享码预览文件</text>
+  </view>
+
+  <view wx:if="{{!showFileInfo}}" class="input-section">
+    <view class="input-card">
+      <view class="input-icon">🔗</view>
+      <input 
+        class="token-input" 
+        placeholder="请输入文件分享码" 
+        value="{{inputToken}}" 
+        bindinput="onInputChange"
+        placeholder-class="input-placeholder"
+      />
+    </view>
+    <button class="submit-btn" bindtap="submitToken" loading="{{isLoading}}">
+      {{ isLoading ? '验证中...' : '获取文件' }}
+    </button>
+  </view>
+
+  <view wx:if="{{errorMessage}}" class="error-section">
+    <view class="error-icon">✕</view>
+    <text class="error-text">{{ errorMessage }}</text>
+    <button class="reset-btn" bindtap="reset">重新输入</button>
+  </view>
+
+  <view wx:if="{{showFileInfo}}" class="file-section">
+    <view class="file-card">
+      <view class="file-icon-wrap">
+        <text class="file-icon-text">{{ getFileExtension(fileName) }}</text>
+      </view>
+      <view class="file-info">
+        <text class="file-name">{{ truncateFileName(fileName) }}</text>
+        <view class="file-meta">
+          <text>已预览 {{ currentDownloads }}/{{ maxDownloads }} 次</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="action-buttons">
+      <button class="preview-btn" bindtap="previewFile">
+        👁️ 预览文件
+      </button>
+      <button class="download-btn" bindtap="downloadFile">
+        📥 下载文件
+      </button>
+    </view>
+
+    <view class="preview-tip">
+      <text>💡 提示：预览图片后，点击右上角"···"菜单可保存图片；预览文档后可选择"用其他应用打开"在WPS等应用中查看</text>
+    </view>
+  </view>
+
+  <view class="back-btn-wrap">
+    <button class="back-btn" bindtap="goBack">← 返回首页</button>
+  </view>
+</view>

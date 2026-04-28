@@ -1,0 +1,101 @@
+<view class="container">
+  <!-- 头部区域 -->
+  <view class="header">
+    <view class="header-icon">
+      <text class="header-icon-text">📤</text>
+    </view>
+    <view class="header-title">文件上传</view>
+    <view class="header-desc">上传文件生成分享链接</view>
+  </view>
+
+  <!-- 上传卡片 -->
+  <view class="card">
+    <view class="card-title">选择文件</view>
+    
+    <!-- 上传区域 -->
+    <view class="upload-area" bindtap="chooseFile">
+      <view class="upload-icon">
+        <text class="upload-icon-text">📁</text>
+      </view>
+      <view class="upload-text">点击选择文件</view>
+      <view class="upload-hint">支持各种文档、图片、压缩包等格式</view>
+    </view>
+
+    <!-- 已选择文件信息 -->
+    <view wx:if="fileName" class="file-info">
+      <view class="file-icon">
+        <text class="file-icon-text">{{ getFileExtension(fileName) }}</text>
+      </view>
+      <view class="file-detail">
+        <view class="file-name">{{ fileName }}</view>
+        <view class="file-size">文件大小：{{ formatFileSize(fileSize) }}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 配置卡片 -->
+  <view wx:if="fileName" class="card">
+    <view class="card-title">分享设置</view>
+    
+    <view class="config-item">
+      <view class="config-label">最大下载次数</view>
+      <view class="config-value">{{ remainingDownloads }} 次</view>
+    </view>
+    
+    <view class="config-item">
+      <view class="config-label">有效期限</view>
+      <view class="config-value">{{ expireDays }} 天</view>
+    </view>
+  </view>
+
+  <!-- 分享链接展示 -->
+  <view wx:if="showShareLink" class="card">
+    <view class="card-title">✓ 上传成功</view>
+    
+    <view class="success-box">
+      <view class="success-icon">
+        <text class="success-icon-text">🎉</text>
+      </view>
+      <view class="success-text">文件已成功上传并生成分享链接</view>
+    </view>
+
+    <view class="share-section">
+      <view class="share-label">分享链接</view>
+      <view class="share-link">{{ shareUrl }}</view>
+      <button class="btn-copy" bindtap="copyLink">复制链接</button>
+    </view>
+
+    <view class="share-info">
+      <view class="info-item">
+        <text class="info-icon">📊</text>
+        <text class="info-text">剩余下载次数：{{ remainingDownloads }} 次</text>
+      </view>
+      <view class="info-item">
+        <text class="info-icon">⏰</text>
+        <text class="info-text">有效期限：{{ expireDays }} 天</text>
+      </view>
+    </view>
+
+    <button class="btn-another" bindtap="resetUpload">继续上传</button>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view wx:if="fileName && !showShareLink" class="card">
+    <view class="btn-area">
+      <button 
+        class="btn-primary {{ !fileName || isUploading ? 'btn-disabled' : '' }}" 
+        bindtap="uploadFile"
+        disabled="{{ !fileName || isUploading }}"
+      >
+        {{ isUploading ? '上传中...' : '上传并生成链接' }}
+      </button>
+    </view>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="tip">
+    <view class="tip-text">
+      将生成的链接粘贴到公众号文章中，粉丝即可点击下载学习资料。
+    </view>
+  </view>
+</view>

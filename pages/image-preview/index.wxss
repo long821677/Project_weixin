@@ -1,0 +1,125 @@
+.container {
+  height: 100vh;
+  width: 100vw;
+  background-color: #000000;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 30rpx;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.back-btn {
+  padding: 16rpx 24rpx;
+  color: #ffffff;
+  font-size: 28rpx;
+}
+
+.title {
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.action-btn {
+  padding: 16rpx 24rpx;
+  color: #ffffff;
+  font-size: 28rpx;
+}
+
+.image-scroll {
+  flex: 1;
+  width: 100%;
+  height: calc(100vh - 120rpx - 80rpx);
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: auto;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 100;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  color: #ffffff;
+  font-size: 28rpx;
+  margin-top: 30rpx;
+}
+
+.error-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 100;
+  padding: 60rpx;
+}
+
+.error-icon {
+  font-size: 100rpx;
+  margin-bottom: 30rpx;
+}
+
+.error-text {
+  color: #ffffff;
+  font-size: 30rpx;
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.retry-btn {
+  padding: 20rpx 60rpx;
+  background-color: #07c160;
+  color: #ffffff;
+  border-radius: 50rpx;
+  font-size: 30rpx;
+}
+
+.tip {
+  padding: 20rpx 30rpx;
+  background-color: rgba(0, 0, 0, 0.8);
+  text-align: center;
+}
+
+.tip text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 24rpx;
+}

@@ -1,0 +1,85 @@
+<view class="container">
+  <view class="header">
+    <text class="title">文件分享系统</text>
+    <text class="subtitle">上传文件 · 生成链接 · 分享下载</text>
+  </view>
+
+  <view class="quick-actions">
+    <view class="action-card upload" bindtap="goUpload">
+      <view class="action-icon">📤</view>
+      <text class="action-text">上传文件</text>
+    </view>
+    <view class="action-card download" bindtap="goDownloadByLink">
+      <view class="action-icon">📥</view>
+      <text class="action-text">通过链接下载</text>
+    </view>
+  </view>
+
+  <view class="section-header">
+    <text class="section-title">我的文件</text>
+    <text class="section-count">{{ fileList.length }} 个文件</text>
+  </view>
+
+  <view wx:if="{{isLoading}}" class="loading">
+    <view class="loading-icon"></view>
+    <text>加载中...</text>
+  </view>
+
+  <view wx:if="{{!isLoading && errorMessage}}" class="error-state">
+    <view class="error-icon">⚠️</view>
+    <text class="error-text">{{ errorMessage }}</text>
+    <button class="refresh-btn" bindtap="loadFileList">重新加载</button>
+  </view>
+
+  <view wx:if="{{!isLoading && !errorMessage && fileList.length > 0}}" class="select-header">
+    <view class="select-all-wrap" catchtap="toggleSelectAll">
+      <view class="checkbox-inner {{fileList.length > 0 && selectedCount === fileList.length ? 'checked' : 'empty'}}">
+        <text wx:if="{{fileList.length > 0 && selectedCount === fileList.length}}">✓</text>
+      </view>
+      <text>全选</text>
+    </view>
+    <view wx:if="{{selectedCount > 0}}" class="select-info">
+      <text>已选择 {{selectedCount}} 个文件</text>
+      <text class="delete-btn" bindtap="deleteSelected">删除</text>
+    </view>
+  </view>
+
+  <view wx:if="{{!isLoading && !errorMessage && fileList.length > 0}}" class="file-list">
+    <view wx:for="{{fileList}}" wx:key="_id" class="file-card">
+      <view class="checkbox-wrap" catchtap="toggleSelect" data-id="{{item._id}}">
+        <view class="checkbox-inner {{item.selected ? 'checked' : 'empty'}}">
+          <text wx:if="{{item.selected}}">✓</text>
+        </view>
+      </view>
+      <view class="file-icon" bindtap="viewFile" data-token="{{item.token}}" catchtap>
+        <text>{{ getFileExtension(item.fileName) }}</text>
+      </view>
+      <view class="file-info" bindtap="viewFile" data-token="{{item.token}}" catchtap>
+        <text class="file-name">{{ item.fileName }}</text>
+        <view class="file-meta">
+          <text>下载 {{ item.currentDownloads }}/{{ item.maxDownloads }} 次</text>
+          <text class="dot">·</text>
+          <text>{{ formatDate(item.createdAt) }}</text>
+        </view>
+      </view>
+      <view class="file-actions">
+        <view class="action-btn copy" bindtap="copyLink" data-token="{{item.token}}" catchtap>
+          <text>复制链接</text>
+        </view>
+        <view class="action-btn delete" bindtap="deleteFile" data-id="{{item._id}}" data-filename="{{item.fileName}}" catchtap>
+          <text>删除</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!isLoading && !errorMessage && fileList.length === 0}}" class="empty-state">
+    <view class="empty-icon">📁</view>
+    <text class="empty-text">暂无上传的文件</text>
+    <text class="empty-desc">点击下方按钮上传第一个文件</text>
+  </view>
+
+  <view class="bottom-bar">
+    <button class="btn-primary" bindtap="goUpload">上传新文件</button>
+  </view>
+</view>

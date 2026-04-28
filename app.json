@@ -1,0 +1,17 @@
+{
+  "pages": [
+    "pages/files/index",
+    "pages/upload/index",
+    "pages/download/index",
+    "pages/image-preview/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#4A90D9",
+    "navigationBarTitleText": "文件下载",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f5f5f5"
+  },
+  "sitemapLocation": "sitemap.json",
+  "cloud": true
+}

@@ -1,0 +1,37 @@
+<view class="container">
+  <view class="header">
+    <view class="back-btn" bindtap="goBack">
+      <text>← 返回</text>
+    </view>
+    <text class="title">图片预览</text>
+    <view class="action-btn" bindtap="saveImage">
+      <text>保存</text>
+    </view>
+  </view>
+  
+  <scroll-view class="image-scroll" scroll-y scroll-x>
+    <image 
+      wx:if="{{tempFilePath}}"
+      class="preview-image" 
+      src="{{tempFilePath}}" 
+      mode="aspectFit"
+      bindload="onImageLoad"
+      binderror="onImageError"
+    />
+  </scroll-view>
+  
+  <view wx:if="{{loading}}" class="loading-overlay">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+  
+  <view wx:if="{{error}}" class="error-overlay">
+    <text class="error-icon">❌</text>
+    <text class="error-text">{{error}}</text>
+    <button class="retry-btn" bindtap="retry">重新加载</button>
+  </view>
+  
+  <view class="tip">
+    <text>💡 提示：点击图片可放大查看，双指可缩放</text>
+  </view>
+</view>
