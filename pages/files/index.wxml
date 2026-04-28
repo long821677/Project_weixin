@@ -85,4 +85,57 @@
   <view class="bottom-bar">
     <button class="btn-primary" bindtap="goUpload">上传新文件</button>
   </view>
+
+  <view wx:if="{{showEditModal}}" class="modal-overlay" bindtap="closeEditModal">
+    <view class="modal-content" catchtap>
+      <view class="modal-header">
+        <text class="modal-title">修改分享设置</text>
+        <view class="modal-close" bindtap="closeEditModal">✕</view>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">文件名称</text>
+          <text class="form-value">{{ editingFile?.fileName || '-' }}</text>
+        </view>
+        <view class="form-item">
+          <text class="form-label">最大下载次数</text>
+          <view class="form-input-wrap">
+            <input 
+              class="form-input" 
+              type="number" 
+              value="{{editMaxDownloads}}" 
+              bindinput="onMaxDownloadsChange"
+              placeholder="请输入下载次数"
+              min="1"
+              max="1000"
+            />
+            <text class="form-unit">次</text>
+          </view>
+        </view>
+        <view class="form-item">
+          <text class="form-label">有效期限</text>
+          <view class="form-input-wrap">
+            <input 
+              class="form-input" 
+              type="number" 
+              value="{{editExpireDays}}" 
+              bindinput="onExpireDaysChange"
+              placeholder="请输入有效天数"
+              min="1"
+              max="365"
+            />
+            <text class="form-unit">天</text>
+          </view>
+        </view>
+        <view class="form-hint">
+          <text>下载次数范围：1-1000 次</text>
+          <text>有效期范围：1-365 天</text>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="btn-secondary" bindtap="closeEditModal">取消</button>
+        <button class="btn-primary" bindtap="saveEdit">保存</button>
+      </view>
+    </view>
+  </view>
 </view>

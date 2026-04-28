@@ -5,7 +5,11 @@ Page({
     errorMessage: '',
     selectedIds: [],
     selectedCount: 0,
-    isAdmin: false
+    isAdmin: false,
+    showEditModal: false,
+    editingFile: null,
+    editMaxDownloads: 10,
+    editExpireDays: 7
   },
 
   onLoad: function () {
@@ -30,7 +34,9 @@ Page({
   },
 
   onShow: function () {
-    this.loadFileList();
+    if (this.data.isAdmin) {
+      this.loadFileList();
+    }
   },
 
   loadFileList: function () {
@@ -66,16 +72,22 @@ Page({
             errorMessage: ''
           });
         } else {
-          that.setData({ isLoading: false, errorMessage: '获取文件列表失败' });
+          that.setData({ isLoading: false, errorMessage: '获取文件列表失败，请稍后重试' });
         }
       },
       fail: (error) => {
         if (timeout) return;
         clearTimeout(timeoutTimer);
-        that.setData({ 
-          isLoading: false, 
-          errorMessage: '获取失败，请检查网络' 
-        });
+        const errMsg = error.errMsg || '';
+        let message = '获取失败，请检查网络';
+        if (errMsg.includes('timeout')) {
+          message = '网络连接超时，请稍后重试';
+        } else if (errMsg.includes('permission')) {
+          message = '权限不足，请检查云开发配置';
+        } else if (errMsg.includes('cloud function')) {
+          message = '云函数调用失败，请检查云函数是否已部署';
+        }
+        that.setData({ isLoading: false, errorMessage: message });
       }
     });
   },
@@ -141,12 +153,12 @@ Page({
                 wx.showToast({ title: `已删除 ${res.result.data.deletedCount} 个文件`, icon: 'success' });
                 this.loadFileList();
               } else {
-                wx.showToast({ title: '删除失败', icon: 'none' });
+                wx.showToast({ title: '删除失败，请重试', icon: 'none' });
               }
             },
             fail: () => {
               wx.hideLoading();
-              wx.showToast({ title: '删除失败', icon: 'none' });
+              wx.showToast({ title: '删除失败，请检查网络', icon: 'none' });
             }
           });
         }
@@ -169,7 +181,7 @@ Page({
           showCancel: false
         });
       },
-      fail: () => wx.showToast({ title: '复制失败', icon: 'none' })
+      fail: () => wx.showToast({ title: '复制失败，请重试', icon: 'none' })
     });
   },
 
@@ -184,62 +196,59 @@ Page({
     const maxDownloads = parseInt(e.currentTarget.dataset.maxdownloads) || 10;
     const expireDays = parseInt(e.currentTarget.dataset.expiredays) || 7;
     
-    wx.showModal({
-      title: '修改分享设置',
-      content: `文件：${fileName}\n当前设置：${maxDownloads}次下载 / ${expireDays}天有效期`,
-      editable: true,
-      placeholderText: '输入新设置，格式：次数,天数（如：20,14）',
-      confirmText: '保存',
-      success: (res) => {
-        if (res.confirm && res.content) {
-          const parts = res.content.split(',');
-          if (parts.length !== 2) {
-            wx.showToast({ title: '格式错误', icon: 'none' });
-            return;
-          }
-          
-          const newMaxDownloads = parseInt(parts[0].trim());
-          const newExpireDays = parseInt(parts[1].trim());
-          
-          if (isNaN(newMaxDownloads) || isNaN(newExpireDays)) {
-            wx.showToast({ title: '请输入数字', icon: 'none' });
-            return;
-          }
-          
-          if (newMaxDownloads < 1 || newMaxDownloads > 1000) {
-            wx.showToast({ title: '下载次数需在1-1000之间', icon: 'none' });
-            return;
-          }
-          
-          if (newExpireDays < 1 || newExpireDays > 365) {
-            wx.showToast({ title: '有效期需在1-365天之间', icon: 'none' });
-            return;
-          }
-          
-          this.updateFileSettings(id, newMaxDownloads, newExpireDays);
-        }
-      }
+    this.setData({
+      showEditModal: true,
+      editingFile: { id, fileName },
+      editMaxDownloads: maxDownloads,
+      editExpireDays: expireDays
     });
   },
 
-  updateFileSettings: function (id, maxDownloads, expireDays) {
-    wx.showLoading({ title: '修改中...' });
+  closeEditModal: function () {
+    this.setData({ showEditModal: false, editingFile: null });
+  },
+
+  onMaxDownloadsChange: function (e) {
+    const value = parseInt(e.detail.value) || 10;
+    this.setData({ editMaxDownloads: Math.max(1, Math.min(1000, value)) });
+  },
+
+  onExpireDaysChange: function (e) {
+    const value = parseInt(e.detail.value) || 7;
+    this.setData({ editExpireDays: Math.max(1, Math.min(365, value)) });
+  },
+
+  saveEdit: function () {
+    const { editingFile, editMaxDownloads, editExpireDays } = this.data;
+    
+    if (!editingFile) {
+      wx.showToast({ title: '操作异常', icon: 'none' });
+      return;
+    }
+    
+    wx.showLoading({ title: '保存中...' });
     
     wx.cloud.callFunction({
       name: 'updateFile',
-      data: { id, maxDownloads, expireDays },
+      data: { 
+        id: editingFile.id, 
+        maxDownloads: editMaxDownloads, 
+        expireDays: editExpireDays 
+      },
       success: (res) => {
         wx.hideLoading();
+        this.closeEditModal();
         if (res.result && res.result.success) {
           wx.showToast({ title: '修改成功', icon: 'success' });
           this.loadFileList();
         } else {
-          wx.showToast({ title: res.result?.message || '修改失败', icon: 'none' });
+          wx.showToast({ title: res.result?.message || '修改失败，请重试', icon: 'none' });
         }
       },
       fail: () => {
         wx.hideLoading();
-        wx.showToast({ title: '网络错误', icon: 'none' });
+        this.closeEditModal();
+        wx.showToast({ title: '网络错误，请检查网络后重试', icon: 'none' });
       }
     });
   },
@@ -253,18 +262,24 @@ Page({
       content: `确定要删除文件「${fileName}」吗？`,
       success: (res) => {
         if (res.confirm) {
+          wx.showLoading({ title: '删除中...' });
+          
           wx.cloud.callFunction({
             name: 'deleteFile',
             data: { id },
             success: (res) => {
+              wx.hideLoading();
               if (res.result && res.result.success) {
                 wx.showToast({ title: '删除成功', icon: 'success' });
                 this.loadFileList();
               } else {
-                wx.showToast({ title: '删除失败', icon: 'none' });
+                wx.showToast({ title: '删除失败，请重试', icon: 'none' });
               }
             },
-            fail: () => wx.showToast({ title: '删除失败', icon: 'none' })
+            fail: () => {
+              wx.hideLoading();
+              wx.showToast({ title: '删除失败，请检查网络', icon: 'none' });
+            }
           });
         }
       }
