@@ -39,12 +39,35 @@
     
     <view class="config-item">
       <view class="config-label">最大下载次数</view>
-      <view class="config-value">{{ remainingDownloads }} 次</view>
+      <view class="config-input-wrap">
+        <input 
+          class="config-input" 
+          type="digit" 
+          value="{{ remainingDownloads }}" 
+          bindinput="onRemainingDownloadsChange"
+          placeholder="10"
+        />
+        <text class="config-unit">次</text>
+      </view>
     </view>
     
     <view class="config-item">
       <view class="config-label">有效期限</view>
-      <view class="config-value">{{ expireDays }} 天</view>
+      <view class="config-input-wrap">
+        <input 
+          class="config-input" 
+          type="digit" 
+          value="{{ expireDays }}" 
+          bindinput="onExpireDaysChange"
+          placeholder="7"
+        />
+        <text class="config-unit">天</text>
+      </view>
+    </view>
+    
+    <view class="config-hint">
+      <text>下载次数：1-1000 次</text>
+      <text>有效期：1-365 天</text>
     </view>
   </view>
 

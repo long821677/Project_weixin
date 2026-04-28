@@ -209,13 +209,23 @@ Page({
   },
 
   onMaxDownloadsChange: function (e) {
-    const value = parseInt(e.detail.value) || 10;
-    this.setData({ editMaxDownloads: Math.max(1, Math.min(1000, value)) });
+    const value = e.detail.value;
+    if (value === '') {
+      this.setData({ editMaxDownloads: '' });
+    } else {
+      const num = parseInt(value) || 10;
+      this.setData({ editMaxDownloads: Math.max(1, Math.min(1000, num)) });
+    }
   },
 
   onExpireDaysChange: function (e) {
-    const value = parseInt(e.detail.value) || 7;
-    this.setData({ editExpireDays: Math.max(1, Math.min(365, value)) });
+    const value = e.detail.value;
+    if (value === '') {
+      this.setData({ editExpireDays: '' });
+    } else {
+      const num = parseInt(value) || 7;
+      this.setData({ editExpireDays: Math.max(1, Math.min(365, num)) });
+    }
   },
 
   saveEdit: function () {
@@ -226,14 +236,17 @@ Page({
       return;
     }
     
+    const maxDownloads = editMaxDownloads ? parseInt(editMaxDownloads) : 10;
+    const expireDays = editExpireDays ? parseInt(editExpireDays) : 7;
+    
     wx.showLoading({ title: '保存中...' });
     
     wx.cloud.callFunction({
       name: 'updateFile',
       data: { 
         id: editingFile.id, 
-        maxDownloads: editMaxDownloads, 
-        expireDays: editExpireDays 
+        maxDownloads: maxDownloads, 
+        expireDays: expireDays 
       },
       success: (res) => {
         wx.hideLoading();

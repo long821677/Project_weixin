@@ -41,6 +41,26 @@ Page({
     }
   },
 
+  onRemainingDownloadsChange: function (e) {
+    const value = e.detail.value;
+    if (value === '') {
+      this.setData({ remainingDownloads: '' });
+    } else {
+      const num = parseInt(value) || 10;
+      this.setData({ remainingDownloads: Math.max(1, Math.min(1000, num)) });
+    }
+  },
+
+  onExpireDaysChange: function (e) {
+    const value = e.detail.value;
+    if (value === '') {
+      this.setData({ expireDays: '' });
+    } else {
+      const num = parseInt(value) || 7;
+      this.setData({ expireDays: Math.max(1, Math.min(365, num)) });
+    }
+  },
+
   chooseFile: function() {
     // 优先使用 chooseFile（从文件系统选择），兼容旧版本使用 chooseMessageFile
     if (wx.chooseFile) {
@@ -385,6 +405,10 @@ Page({
           }
         });
         
+        // 使用默认值处理空输入
+        const maxDownloads = that.data.remainingDownloads ? parseInt(that.data.remainingDownloads) : 10;
+        const expireDays = that.data.expireDays ? parseInt(that.data.expireDays) : 7;
+        
         // 步骤2：调用云函数保存记录到数据库
         wx.cloud.callFunction({
           name: 'uploadFile',
@@ -392,8 +416,8 @@ Page({
             fileID: uploadResult.fileID,
             fileName: that.data.fileName,
             token: token,
-            maxDownloads: that.data.remainingDownloads,
-            expireDays: that.data.expireDays,
+            maxDownloads: maxDownloads,
+            expireDays: expireDays,
             cloudPath: uploadResult.fileID
           },
           success: (res) => {
