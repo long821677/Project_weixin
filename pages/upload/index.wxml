@@ -1,5 +1,4 @@
 <view class="container">
-  <!-- 头部区域 -->
   <view class="header">
     <view class="header-icon">
       <text class="header-icon-text">📤</text>
@@ -8,20 +7,18 @@
     <view class="header-desc">上传文件生成分享链接</view>
   </view>
 
-  <!-- 上传卡片 -->
   <view class="card">
     <view class="card-title">选择文件</view>
     
-    <!-- 上传区域 -->
     <view class="upload-area" bindtap="chooseFile">
       <view class="upload-icon">
         <text class="upload-icon-text">📁</text>
       </view>
       <view class="upload-text">点击选择文件</view>
-      <view class="upload-hint">支持各种文档、图片、压缩包等格式</view>
+      <view class="upload-hint">支持从手机文件系统或聊天记录选择</view>
+      <view class="upload-formats">支持格式：PPT、PPTX、PDF、Word、Excel、图片、压缩包等</view>
     </view>
 
-    <!-- 已选择文件信息 -->
     <view wx:if="fileName" class="file-info">
       <view class="file-icon">
         <text class="file-icon-text">{{ getFileExtension(fileName) }}</text>
@@ -30,11 +27,24 @@
         <view class="file-name">{{ fileName }}</view>
         <view class="file-size">文件大小：{{ formatFileSize(fileSize) }}</view>
       </view>
+      <view class="file-actions">
+        <view class="action-btn" bindtap="resetUpload">重新选择</view>
+      </view>
     </view>
   </view>
 
-  <!-- 配置卡片 -->
-  <view wx:if="fileName" class="card">
+  <view wx:if="lastError" class="card error-card">
+    <view class="error-header">
+      <text class="error-icon">⚠️</text>
+      <text class="error-title">上传失败</text>
+    </view>
+    <view class="error-content">{{ lastError }}</view>
+    <view class="error-actions">
+      <button class="btn-error-retry" bindtap="chooseFile">重新选择文件</button>
+    </view>
+  </view>
+
+  <view wx:if="fileName && !lastError" class="card">
     <view class="card-title">分享设置</view>
     
     <view class="config-item">
@@ -71,7 +81,6 @@
     </view>
   </view>
 
-  <!-- 分享链接展示 -->
   <view wx:if="showShareLink" class="card">
     <view class="card-title">✓ 上传成功</view>
     
@@ -102,8 +111,7 @@
     <button class="btn-another" bindtap="resetUpload">继续上传</button>
   </view>
 
-  <!-- 操作按钮 -->
-  <view wx:if="fileName && !showShareLink" class="card">
+  <view wx:if="fileName && !showShareLink && !lastError" class="card">
     <view class="btn-area">
       <button 
         class="btn-primary {{ !fileName || isUploading ? 'btn-disabled' : '' }}" 
@@ -115,10 +123,12 @@
     </view>
   </view>
 
-  <!-- 提示信息 -->
   <view class="tip">
     <view class="tip-text">
       将生成的链接粘贴到公众号文章中，粉丝即可点击下载学习资料。
+    </view>
+    <view class="tip-text-small">
+      提示：PPT、Word、Excel等文件在微信内置浏览器中可能无法直接预览，建议另存为PDF格式后上传兼容性更好
     </view>
   </view>
 </view>
