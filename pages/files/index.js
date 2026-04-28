@@ -156,11 +156,19 @@ Page({
 
   copyLink: function (e) {
     const token = e.currentTarget.dataset.token;
-    const shareUrl = `/pages/download/index?token=${token}`;
+    const fileName = e.currentTarget.dataset.filename || '文件';
+    
+    const shareText = `📁 ${fileName}\n🔑 分享码：${token}\n\n💡 使用方法：\n1. 微信搜索「文件分享系统」\n2. 点击「通过链接下载」\n3. 粘贴分享码即可下载`;
     
     wx.setClipboardData({
-      data: shareUrl,
-      success: () => wx.showToast({ title: '链接已复制', icon: 'success' }),
+      data: shareText,
+      success: () => {
+        wx.showModal({
+          title: '分享成功',
+          content: '已复制分享信息到剪贴板',
+          showCancel: false
+        });
+      },
       fail: () => wx.showToast({ title: '复制失败', icon: 'none' })
     });
   },
@@ -168,6 +176,72 @@ Page({
   viewFile: function (e) {
     const token = e.currentTarget.dataset.token;
     wx.navigateTo({ url: `/pages/download/index?token=${token}` });
+  },
+
+  editFile: function (e) {
+    const id = e.currentTarget.dataset.id;
+    const fileName = e.currentTarget.dataset.filename;
+    const maxDownloads = parseInt(e.currentTarget.dataset.maxdownloads) || 10;
+    const expireDays = parseInt(e.currentTarget.dataset.expiredays) || 7;
+    
+    wx.showModal({
+      title: '修改分享设置',
+      content: `文件：${fileName}\n当前设置：${maxDownloads}次下载 / ${expireDays}天有效期`,
+      editable: true,
+      placeholderText: '输入新设置，格式：次数,天数（如：20,14）',
+      confirmText: '保存',
+      success: (res) => {
+        if (res.confirm && res.content) {
+          const parts = res.content.split(',');
+          if (parts.length !== 2) {
+            wx.showToast({ title: '格式错误', icon: 'none' });
+            return;
+          }
+          
+          const newMaxDownloads = parseInt(parts[0].trim());
+          const newExpireDays = parseInt(parts[1].trim());
+          
+          if (isNaN(newMaxDownloads) || isNaN(newExpireDays)) {
+            wx.showToast({ title: '请输入数字', icon: 'none' });
+            return;
+          }
+          
+          if (newMaxDownloads < 1 || newMaxDownloads > 1000) {
+            wx.showToast({ title: '下载次数需在1-1000之间', icon: 'none' });
+            return;
+          }
+          
+          if (newExpireDays < 1 || newExpireDays > 365) {
+            wx.showToast({ title: '有效期需在1-365天之间', icon: 'none' });
+            return;
+          }
+          
+          this.updateFileSettings(id, newMaxDownloads, newExpireDays);
+        }
+      }
+    });
+  },
+
+  updateFileSettings: function (id, maxDownloads, expireDays) {
+    wx.showLoading({ title: '修改中...' });
+    
+    wx.cloud.callFunction({
+      name: 'updateFile',
+      data: { id, maxDownloads, expireDays },
+      success: (res) => {
+        wx.hideLoading();
+        if (res.result && res.result.success) {
+          wx.showToast({ title: '修改成功', icon: 'success' });
+          this.loadFileList();
+        } else {
+          wx.showToast({ title: res.result?.message || '修改失败', icon: 'none' });
+        }
+      },
+      fail: () => {
+        wx.hideLoading();
+        wx.showToast({ title: '网络错误', icon: 'none' });
+      }
+    });
   },
 
   deleteFile: function (e) {

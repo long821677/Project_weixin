@@ -265,6 +265,11 @@
   color: #4A90D9;
 }
 
+.action-btn.edit {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
 .action-btn.delete {
   background: #ffebee;
   color: #c62828;

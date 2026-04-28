@@ -63,8 +63,11 @@
         </view>
       </view>
       <view class="file-actions">
-        <view class="action-btn copy" bindtap="copyLink" data-token="{{item.token}}" catchtap>
+        <view class="action-btn copy" bindtap="copyLink" data-token="{{item.token}}" data-filename="{{item.fileName}}" catchtap>
           <text>复制链接</text>
+        </view>
+        <view class="action-btn edit" bindtap="editFile" data-id="{{item._id}}" data-filename="{{item.fileName}}" data-maxdownloads="{{item.maxDownloads}}" data-expiredays="{{item.expireDays || 7}}" catchtap>
+          <text>编辑</text>
         </view>
         <view class="action-btn delete" bindtap="deleteFile" data-id="{{item._id}}" data-filename="{{item.fileName}}" catchtap>
           <text>删除</text>
