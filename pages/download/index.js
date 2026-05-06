@@ -334,7 +334,7 @@ Page({
 
   goBack: function () {
     wx.reLaunch({
-      url: '/pages/files/index'
+      url: '/pages/index/index'
     });
   },
 
