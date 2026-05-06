@@ -33,18 +33,7 @@
     </view>
   </view>
 
-  <view wx:if="lastError" class="card error-card">
-    <view class="error-header">
-      <text class="error-icon">⚠️</text>
-      <text class="error-title">上传失败</text>
-    </view>
-    <view class="error-content">{{ lastError }}</view>
-    <view class="error-actions">
-      <button class="btn-error-retry" bindtap="chooseFile">重新选择文件</button>
-    </view>
-  </view>
-
-  <view wx:if="fileName && !lastError" class="card">
+  <view wx:if="fileName" class="card">
     <view class="card-title">分享设置</view>
     
     <view class="config-item">

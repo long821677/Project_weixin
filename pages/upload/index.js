@@ -371,8 +371,7 @@ Page({
     console.error('上传错误:', message);
 
     this.setData({
-      isUploading: false,
-      lastError: message
+      isUploading: false
     });
 
     wx.showModal({
@@ -382,7 +381,7 @@ Page({
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
-          this.chooseFile();
+          this.resetUpload();
         }
       }
     });
